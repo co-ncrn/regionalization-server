@@ -15,21 +15,22 @@ const memwatch = require('memwatch-next');	// watch for memory leaks
 const sanitizer = require('sanitizer');		// sanitize input https://www.npmjs.com/package/sanitizer
 const validator = require('validator');		// validate input https://www.npmjs.com/package/validator
 const Boom = require('boom');				// HTTP-friendly error objects https://github.com/hapijs/boom
-
-
 const Netmask = require('netmask').Netmask;
-
-
 const Hapi = require('hapi');		// load hapi server module
 const server = new Hapi.Server();	// create hapi server object
+
 
 // create server connection
 server.connection({
 	host : 'localhost',
 	port: 3000,
   	routes: {
-		cors: {
-			origin: ['*']
+  		/**/ // comment out to turn CORS off
+		cors: {				
+			// allow connections from all
+			//origin: ['*'] 	
+			// define allowed CORS orgins
+			origin: ["http://owenmundy.local","http://localhost","http://127.0.0.1"]
 		}
 	}
 });

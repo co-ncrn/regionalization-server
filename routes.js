@@ -6,8 +6,6 @@
 
 const Handlers = require('./handlers/db_calls.js');
 
-// define allowed CORS orgins
-const corsOrigins = ["http://owenmundy.local"];//"http://localhost","http://127.0.0.1"];
 
 // export routes to server
 module.exports = [
@@ -15,12 +13,7 @@ module.exports = [
 		// root / test
 		method: 'GET',		
 		path: '/',
-		handler: Handlers.root,
-		config: { 
-			cors: {
-				origin: corsOrigins
-			}  
-		}
+		handler: Handlers.root
 	},{
 		// get all msa data
 		method: 'GET',
@@ -31,22 +24,14 @@ module.exports = [
 			cache: {
 				privacy: 'private',
 				expiresIn: 86400 * 1000
-			},
-			cors: {
-				origin: corsOrigins
-			}  
+			}
 		}
 	},{
 		// get _metadata for menus
 		method: 'GET',
 		//path: '/api/_metadata/{msa?}',
 		path: '/_metadata/{msa?}',
-		handler: Handlers.get_metadata,
-		config: { 
-			cors: {
-				origin: corsOrigins
-			}  
-		}
+		handler: Handlers.get_metadata
 	},{
 		// may not need to reference API with Apache/PHP proxy pointing @ /api
 		/*
@@ -58,12 +43,7 @@ module.exports = [
 		// default
 		method: 'GET',
 		path: '/{path*}',
-		handler: Handlers.catchAll,
-		config: { 
-			cors: {
-				origin: corsOrigins
-			}  
-		}
+		handler: Handlers.catchAll
 	}
 
 
