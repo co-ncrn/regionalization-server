@@ -13,7 +13,10 @@ module.exports = [
 		// root / test
 		method: 'GET',		
 		path: '/',
-		handler: Handlers.root
+		handler: Handlers.root,
+		config: {
+			security: true
+		}
 	},{
 		// get all msa data
 		method: 'GET',
@@ -21,6 +24,7 @@ module.exports = [
 		path: '/{msa}/{scenario}/{data}',
 		handler: Handlers.get_MSA_scenario_data,
 		config: {
+			security: true,
 			cache: {
 				privacy: 'private',
 				expiresIn: 86400 * 1000
@@ -31,19 +35,28 @@ module.exports = [
 		method: 'GET',
 		//path: '/api/_metadata/{msa?}',
 		path: '/_metadata/{msa?}',
-		handler: Handlers.get_metadata
+		handler: Handlers.get_metadata,
+		config: {
+			security: true
+		}
 	},{
 		// may not need to reference API with Apache/PHP proxy pointing @ /api
 		/*
 		// catch alls 
 		method: 'GET',
 		path: '/api/{path*}',
-		handler: Handlers.catchAll_api
+		handler: Handlers.catchAll_api,
+		config: {
+			security: true
+		}
 	},{*/
 		// default
 		method: 'GET',
 		path: '/{path*}',
-		handler: Handlers.catchAll
+		handler: Handlers.catchAll,
+		config: {
+			security: true
+		}
 	}
 
 
