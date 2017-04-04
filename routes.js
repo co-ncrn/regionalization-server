@@ -13,7 +13,8 @@ module.exports = [
 		// root / test
 		method: 'GET',		
 		path: '/',
-		handler: Handlers.root
+		handler: Handlers.root,
+		config: { cors: true }
 	},{
 		// get all msa data
 		method: 'GET',
