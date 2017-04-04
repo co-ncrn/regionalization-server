@@ -6,6 +6,7 @@
 
 const Handlers = require('./handlers/db_calls.js');
 
+const corsOrigins = ["http://localhost/"];
 
 // export routes to server
 module.exports = [
@@ -14,7 +15,11 @@ module.exports = [
 		method: 'GET',		
 		path: '/',
 		handler: Handlers.root,
-		config: { cors: true }
+		config: { 
+			cors: {
+				origin: corsOrigins
+			}  
+		}
 	},{
 		// get all msa data
 		method: 'GET',
@@ -25,7 +30,10 @@ module.exports = [
 			cache: {
 				privacy: 'private',
 				expiresIn: 86400 * 1000
-			}
+			},
+			cors: {
+				origin: corsOrigins
+			}  
 		}
 	},{
 		// get _metadata for menus
