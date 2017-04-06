@@ -214,3 +214,6 @@ exports.catchAll = function(request, reply) {
 	return reply( this.Boom.notFound(error) );
 };
 
+
+
+

@@ -26,7 +26,6 @@ module.exports = [
 		path: '/',
 		handler: Handlers.root
 	},{
-		// get all msa data
 		config: { 
 			description: "Returns all data for specified msa/scenario/data",
 			tags: ['data'],

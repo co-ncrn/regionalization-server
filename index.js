@@ -190,9 +190,7 @@ server.register([{								// first arg to server.register() is array to register
 	options: goodReportingOptions				// options for plugin
 },{
 	register: require('hapi-etags'),			// adds eTags to Hapi https://github.com/mtharrison/hapi-etags
-	options: {
-	
-	}
+	options: { }
 }], (err) => {									// second arg to server.register() is a callback
 	if (err) throw err;							// check for error registering the plugin(s)
 
