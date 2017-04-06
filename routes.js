@@ -14,9 +14,7 @@ module.exports = [
 		method: 'GET',		
 		path: '/',
 		handler: Handlers.root,
-		config: {
-			security: true
-		}
+		config: { security: true }
 	},{
 		// get all msa data
 		method: 'GET',
@@ -36,27 +34,21 @@ module.exports = [
 		//path: '/api/_metadata/{msa?}',
 		path: '/_metadata/{msa?}',
 		handler: Handlers.get_metadata,
-		config: {
-			security: true
-		}
+		config: { security: true }
 	},{
-		// may not need to reference API with Apache/PHP proxy pointing @ /api
+		// may not need to reference /api in URL while using Apache/PHP proxy
 		/*
 		// catch alls 
 		method: 'GET',
 		path: '/api/{path*}',
 		handler: Handlers.catchAll_api,
-		config: {
-			security: true
-		}
+		config: { security: true }
 	},{*/
 		// default
 		method: 'GET',
 		path: '/{path*}',
 		handler: Handlers.catchAll,
-		config: {
-			security: true
-		}
+		config: { security: true }
 	}
 
 
