@@ -14,8 +14,6 @@ const Globals = require('../inc/globals.js');
  *	TEST: http://localhost:3000/
  */
 exports.root = function (request, reply) {
-	// check binding
-	if (!this.db) console.log("db: " + JSON.stringify(this.db));
 	var timer = new Date();
 	var meta = {
 		request: "/",
@@ -36,33 +34,46 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	var timer = new Date();
 	var meta = { request: "get_MSA_scenario_data", params: {}, took: 0 }
 
+	// check binding
+	if (!this.db) request.log(['database'], "db: " + JSON.stringify(this.db));
+
+	// store reference to meta info
 	var scenariosData = Globals.getScenariosData();
 	var scenarios = Globals.getScenarios();
 
+	// log request
+	//console.log(request.params);
+	request.log(['params'], JSON.stringify(request.params));
 
 
-	console.log(request.params);
+
+	// SANITIZE & VALIDATE request.params
 
 	// confirm required params received
-	if (!request.params || (!request.params.msa || !request.params.scenario || !request.params.data))
+	if (!request.params || (!request.params.msa || !request.params.scenario || !request.params.data)){
+		request.log(['params','error'], 'Missing parameter(s)');
 		return reply( this.Boom.notFound('Missing parameter(s)') );
-
+	}
 	// sanitize input
 	meta.params = { msa: this.Sanitizer.escape(request.params.msa), 
 					scenario: this.Sanitizer.escape(request.params.scenario), 
 					data: this.Sanitizer.escape(request.params.data) };
 
-
-	// VALIDATION
-	if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 }))
-		// is msa a valid int between min/max? 
+	// is msa a valid int between min/max? 
+	if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 })){
+		request.log(['params','error'], 'That MSA does not exist');
 		return reply( this.Boom.notFound('That MSA does not exist') );
-	if ( !this.Validator.isIn(meta.params.scenario, scenarios))
-		// does scenario exist inside scenariosData keys?
+	} 
+	// does scenario exist inside scenariosData keys?
+	if ( !this.Validator.isIn(meta.params.scenario, scenarios)){
+		request.log(['params','error'], 'That scenario does not exist');
 		return reply( this.Boom.notFound('That scenario does not exist') );
-	if ( !this.Validator.isIn(meta.params.data, scenariosData[meta.params.scenario]))
-		// does data exist inside scenariosData object?
+	}
+	// does data exist inside scenariosData object?
+	if ( !this.Validator.isIn(meta.params.data, scenariosData[meta.params.scenario])){	
+		request.log(['params','error'], 'That data does not exist');	
 		return reply( this.Boom.notFound('That data does not exist') );
+	}
 
 
 
@@ -93,14 +104,11 @@ exports.get_MSA_scenario_data = function(request, reply) {
 				    m_s +'_crosswalk c ' +
 				'WHERE t.TID = c.TID AND r.RID = c.RID ' +
 				'ORDER BY RID;';
-
-
-	console.log("sql: ",sql);
+	//console.log("sql: ",sql);
 
 	// perform query
 	this.db.query(sql, function (error, results, fields) {
 		if (error) throw error;
-
 		//console.log('results[0].TID: ', results[0].TID); // test
 		meta.response = results;		// return all results
 		meta.took = new Date()-timer;	// update timer
@@ -125,7 +133,10 @@ exports.get_metadata = function(request, reply) {
 	var timer = new Date();
 	var meta = { request: "get_metadata", took: 0 }
 	var sql = "SELECT msa,scenario,data,description,geo FROM _metadata ";
-	console.log(request.params);
+
+	// log request
+	//console.log(request.params);
+	request.log(['params'], "\n"+ JSON.stringify(request.params));
 
 	// if params received
 	if (request.params && request.params.msa){
@@ -134,6 +145,7 @@ exports.get_metadata = function(request, reply) {
 
 		// validate MSA: is it a valid int between min/max?
 		if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 })){
+			request.log(['params','error'], 'That MSA does not exist');
 			return reply( this.Boom.notFound('That MSA does not exist') );
 		} else {
 			sql += ' WHERE msa='+ meta.params.msa;
@@ -141,8 +153,7 @@ exports.get_metadata = function(request, reply) {
 	}
 	// finish sql
 	sql += ' ORDER BY msa;';
-
-	console.log(sql);
+	//console.log(sql);
 
 
 	// perform query
@@ -186,8 +197,6 @@ exports.get_metadata = function(request, reply) {
 		reply(meta);					// send response
 	});
 
-
-
 };
 
 
@@ -196,26 +205,11 @@ exports.get_metadata = function(request, reply) {
 
 
 
-
-// in future may need this to get only one TID
-
-exports.get_MSA_scenario_TID = function(request, reply) {
-	//if (request.params.tid) meta.params.tid = this.Sanitizer.escape(request.params.tid);
-	// simple query
-	//var sql = 'SELECT * FROM '+ this.db.escapeId(meta.params.msa +'_'+ meta.params.scenario +'_input_tracts') ;
-};
-
-
-
-
-
-// catch everything
-exports.catchAll_api = function(request, reply) {
-	return reply( this.Boom.notFound('That endpoint requires an msa/scenario/datatype') );
-};
-// catch everything
+// catch everything else
 exports.catchAll = function(request, reply) {
+	var error = 'The endpoint [ '+ request.path +' ] does not exist'
+	request.log(['error'], error);	
 	//return reply('that endpoint does not exist').code(404); // simple version
-	return reply( this.Boom.notFound('That endpoint does not exist') );
+	return reply( this.Boom.notFound(error) );
 };
 

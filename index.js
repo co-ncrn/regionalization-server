@@ -15,9 +15,9 @@ const memwatch = require('memwatch-next');	// watch for memory leaks
 const sanitizer = require('sanitizer');		// sanitize input https://www.npmjs.com/package/sanitizer
 const validator = require('validator');		// validate input https://www.npmjs.com/package/validator
 const Boom = require('boom');				// HTTP-friendly error objects https://github.com/hapijs/boom
-const Netmask = require('netmask').Netmask;
-const Hapi = require('hapi');		// load hapi server module
-const server = new Hapi.Server();	// create hapi server object
+//const Netmask = require('netmask').Netmask;	// block IP addresses in API
+const Hapi = require('hapi');				// load hapi server module
+const server = new Hapi.Server();			// create hapi server object
 
 
 // create server connection
@@ -51,8 +51,9 @@ const db = mysql.createConnection({
 });
 db.connect();						// connect to db
 db.on('error', function(err) {		// test for error
-	console.log(err.code); 		
-	console.error("DATABASE ERRRORRRRRRR");
+	//console.log(err.code); 		
+	//console.error("DATABASE ERRRORRRRRRR");
+	request.log(['database','error'], "db: " + JSON.stringify(err) );
 	db.connect();
 });
 
@@ -70,7 +71,7 @@ server.bind({
 
 
 
-
+/*
 // list of blocked IP/subnets
 // get more:
 // http://www.wizcrafts.net/iptables-blocklists.html
@@ -92,19 +93,98 @@ const blockIPs = function (request,reply){		// define extension function
 }												//	hand control back to hapi, proceed as normal 
 server.ext('onRequest', blockIPs);				// attach blockIPs function to the onRequest extension point
 
+*/
 
 
 
 
+const goodReportingOptions = {		// Good options for what to report
+    ops: { interval: 1000 },
+    reporters: {					// specify range of reporters
+
+
+    	// log to console
+        console: [{
+            module: 'good-squeeze',	// filter events
+            name: 'Squeeze',
+            args: [{ 
+            	// https://github.com/hapijs/good/blob/master/examples/good-squeeze-tips.md
+				//ops: '*',			// report all ops events (memory, etc)
+				//log: ['log','request','response','error'], // report only log events w/ these tags
+				log: '*', 			// report all log events
+				error: '*' ,		// report all error events
+				request: '*', 		// report all request events
+				response: '*'		// report all response events
+            }]	
+        }, {
+            module: 'good-console'
+        }, 'stdout'],
+
+
+        // log server events to file
+        // https://github.com/hapijs/good/blob/master/examples/log-to-file.md
+		server: [{
+		    module: 'good-squeeze',	// filter events
+		    name: 'Squeeze',
+		    args: [{ 
+		    	//ops: '*', 		// good for testing log rotation
+		    	log: 'start'
+		    	/*
+		    	// turning these off because Apache logs these to .../apache2/access_log 
+		    	log: '*', 		
+		    	request: '*' 
+				*/
+		   	}] 
+		}, {
+		    module: 'good-squeeze', // in addition to filtering, also changes how lines are written
+		    name: 'SafeJson',		// https://github.com/hapijs/good-squeeze#safejsonoptions-stringify
+		    args: [
+		        //null, { separator: ',' }	// , only
+		        null,  { separator: ",\n" } // , + new line
+		    ]
+		}, {
+		    module: 'rotating-file-stream', // handles log rotation
+		    args: [ 
+		        'access.log',
+		        {
+					path: './logs',	// base path
+					size: '10K', 	// rotate every 10 MegaBytes written
+					interval: '1d' 	// rotate daily
+		        }
+		    ]
+		}],
+
+
+		// log error events to file
+		errors: [{
+		    module: 'good-squeeze',
+		    name: 'Squeeze',
+		    args: [{ 
+				log: 'error', 
+				error: '*',
+				request: 'error'
+		    }] 
+		}, {
+		    module: 'good-squeeze',
+		    name: 'SafeJson',
+		    args: [ null,  { separator: ",\n" } ]
+		}, {
+		    module: 'rotating-file-stream', // handles log rotation
+		    args: [ 
+		        'error.log',
+		        {
+					path: './logs',
+					size: '10K',
+					interval: '1d'
+		        }
+		    ]
+		}]
+    }
+};
 
 server.register([{								// first arg to server.register() is array to register plugins
 	register: require('good'),					// load 'good' module as register option
-	options: {									// options object for plugin
-		reporters: [{							// specify range of reporters
-			reporter: require('good-console'),	// load good-console module as a reporter option
-			events: { response: '*' }			// specify that reporter report all response events
-		}]
-	}
+	options: goodReportingOptions				// options for plugin
 },{
 	register: require('hapi-etags'),			// adds eTags to Hapi https://github.com/mtharrison/hapi-etags
 	options: {
@@ -116,7 +196,8 @@ server.register([{								// first arg to server.register() is array to register
 	server.route(require('./routes'));			// require routes (after binds, methods, etc.)
 	server.start((err) => {
 		if (err) throw err;						// check for error starting the server
-		console.log('Server running at: ', server.info.uri);
+		//console.log('Server running at: ', server.info.uri);
+		server.log(['start'], 'Server running at: '+ server.info.uri);
 	});
 });
 
