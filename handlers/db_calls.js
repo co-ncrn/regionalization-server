@@ -136,18 +136,19 @@ exports.get_metadata = function(request, reply) {
 
 	// log request
 	//console.log(request.params);
-	request.log(['params'], "\n"+ JSON.stringify(request.params));
+	request.log(['params'], JSON.stringify(request.params));
 
 	// if params received
 	if (request.params && request.params.msa){
 		// sanitize input
 		meta.params = { msa: this.Sanitizer.escape(request.params.msa) };
 
-		// validate MSA: is it a valid int between min/max?
+		// validate MSA: is there an MSA and is it a valid int between min/max?
 		if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 })){
 			request.log(['params','error'], 'That MSA does not exist');
 			return reply( this.Boom.notFound('That MSA does not exist') );
 		} else {
+			// otherwise assume no MSA
 			sql += ' WHERE msa='+ meta.params.msa;
 		}
 	}

@@ -9,13 +9,15 @@
 'use strict';
 var os = require('os'); os.tmpDir = os.tmpdir;	// hide annoying mac error
 
-
+// required modules
 const fs = require('./inc/functions.js');	// include functions file
 const memwatch = require('memwatch-next');	// watch for memory leaks
 const sanitizer = require('sanitizer');		// sanitize input https://www.npmjs.com/package/sanitizer
 const validator = require('validator');		// validate input https://www.npmjs.com/package/validator
 const Boom = require('boom');				// HTTP-friendly error objects https://github.com/hapijs/boom
 //const Netmask = require('netmask').Netmask;	// block IP addresses in API
+
+
 const Hapi = require('hapi');				// load hapi server module
 const server = new Hapi.Server();			// create hapi server object
 
@@ -108,6 +110,7 @@ const goodReportingOptions = {		// Good options for what to report
             module: 'good-squeeze',	// filter events
             name: 'Squeeze',
             args: [{ 
+            	// specify the tags to filter for 
             	// https://github.com/hapijs/good/blob/master/examples/good-squeeze-tips.md
 				//ops: '*',			// report all ops events (memory, etc)
 				//log: ['log','request','response','error'], // report only log events w/ these tags
@@ -117,7 +120,7 @@ const goodReportingOptions = {		// Good options for what to report
 				response: '*'		// report all response events
             }]	
         }, {
-            module: 'good-console'
+            module: 'good-console'	// select the reporter to use
         }, 'stdout'],
 
 
