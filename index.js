@@ -185,6 +185,10 @@ const goodReportingOptions = {		// Good options for what to report
     }
 };
 
+server.on('response', function (request) {
+    console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
+});
+
 server.register([{								// first arg to server.register() is array to register plugins
 	register: require('good'),					// load 'good' module as register option
 	options: goodReportingOptions				// options for plugin
