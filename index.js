@@ -17,15 +17,6 @@ const validator = require('validator');		// validate input https://www.npmjs.com
 const Boom = require('boom');				// HTTP-friendly error objects https://github.com/hapijs/boom
 //const Netmask = require('netmask').Netmask;	// block IP addresses in API
 
-
-// load the package and set custom message options
-const Relish = require('relish')({
-	messages: {
-		'msa': 'MSA should be larger than 10180 and less than '
-	}
-});
-
-
 const Hapi = require('hapi');				// load hapi server module
 const server = new Hapi.Server();			// create hapi server object
 
@@ -41,11 +32,7 @@ server.connection({
 			//origin: ['*'] 	
 			// define allowed CORS orgins
 			origin: ["http://owenmundy.local","http://localhost","http://127.0.0.1"]
-		},
-		validate: {
-			failAction: Relish.failAction
 		}
-
 	}
 });
 
@@ -121,14 +108,6 @@ server.on('response', function (request) {
     	request.url.path + ' --> ' + request.response.statusCode);
 });
 
-// clean reply error 
-server.ext('onPreResponse', function (request, reply) {
-    if (request.response.isBoom && request.response.data && request.response.data.name === 'ValidationError') {
-        //console.log(request.response.output);
-        request.response.output.payload.message = '';
-    }
-    return reply.continue();
-});
 
 
 
