@@ -100,98 +100,20 @@ server.ext('onRequest', blockIPs);				// attach blockIPs function to the onReque
 
 
 
-const goodReportingOptions = {		// Good options for what to report
-    ops: { interval: 1000 },
-    reporters: {					// specify range of reporters
 
 
-    	// log to console
-        console: [{
-            module: 'good-squeeze',	// filter events
-            name: 'Squeeze',
-            args: [{ 
-            	// specify the tags to filter for 
-            	// https://github.com/hapijs/good/blob/master/examples/good-squeeze-tips.md
-				//ops: '*',			// report all ops events (memory, etc)
-				//log: ['log','request','response','error'], // report only log events w/ these tags
-				log: '*', 			// report all log events
-				error: '*' ,		// report all error events
-				request: '*', 		// report all request events
-				response: '*'		// report all response events
-            }]	
-        }, {
-            module: 'good-console'	// select the reporter to use
-        }, 'stdout'],
 
-
-        // log server events to file
-        // https://github.com/hapijs/good/blob/master/examples/log-to-file.md
-		server: [{
-		    module: 'good-squeeze',	// filter events
-		    name: 'Squeeze',
-		    args: [{ 
-		    	//ops: '*', 		// good for testing log rotation
-		    	log: 'start'
-		    	/*
-		    	// turning these off because Apache logs these to .../apache2/access_log 
-		    	log: '*', 		
-		    	request: '*' 
-				*/
-		   	}] 
-		}, {
-		    module: 'good-squeeze', // in addition to filtering, also changes how lines are written
-		    name: 'SafeJson',		// https://github.com/hapijs/good-squeeze#safejsonoptions-stringify
-		    args: [
-		        //null, { separator: ',' }	// , only
-		        null,  { separator: ",\n" } // , + new line
-		    ]
-		}, {
-		    module: 'rotating-file-stream', // handles log rotation
-		    args: [ 
-		        'access.log',
-		        {
-					path: './logs',	// base path
-					size: '10K', 	// rotate every 10 MegaBytes written
-					interval: '1d' 	// rotate daily
-		        }
-		    ]
-		}],
-
-
-		// log error events to file
-		errors: [{
-		    module: 'good-squeeze',
-		    name: 'Squeeze',
-		    args: [{ 
-				log: 'error', 
-				error: '*',
-				request: 'error'
-		    }] 
-		}, {
-		    module: 'good-squeeze',
-		    name: 'SafeJson',
-		    args: [ null,  { separator: ",\n" } ]
-		}, {
-		    module: 'rotating-file-stream', // handles log rotation
-		    args: [ 
-		        'error.log',
-		        {
-					path: './logs',
-					size: '10K',
-					interval: '1d'
-		        }
-		    ]
-		}]
-    }
-};
 
 server.on('response', function (request) {
     console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
 });
 
+
+const loggingoptions = require('./inc/loggingoptions.js');	// include functions file
+
 server.register([{								// first arg to server.register() is array to register plugins
 	register: require('good'),					// load 'good' module as register option
-	options: goodReportingOptions				// options for plugin
+	options: loggingoptions.goodReportingOptions // options for plugin
 },{
 	register: require('hapi-etags'),			// adds eTags to Hapi https://github.com/mtharrison/hapi-etags
 	options: { }
@@ -201,8 +123,9 @@ server.register([{								// first arg to server.register() is array to register
 	server.route(require('./routes'));			// require routes (after binds, methods, etc.)
 	server.start((err) => {
 		if (err) throw err;						// check for error starting the server
+		var now = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 		//console.log('Server running at: ', server.info.uri);
-		server.log(['start'], 'Server running at: '+ server.info.uri);
+		server.log(['start'], 'Server running at: '+ server.info.uri + ' as of ' + now);
 	});
 });
 
