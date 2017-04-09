@@ -2,4 +2,5 @@
 export NODE_ENV=production
 export PATH=/usr/local/bin:$PATH
 forever stopall
-forever start /home/omundy/regionalization-server/index.js > /dev/null
+cd /home/omundy/regionalization-server/ && forever start ./index.js > /dev/null
+
