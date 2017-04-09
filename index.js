@@ -1,16 +1,14 @@
 /**
- *	Regionalization Server
+ *	ACS Regionalization Server
  *	@requires: node, npm, etc.
  *	@use: forever to run https://github.com/foreverjs/forever
  *	$ forever start index.js
- *	on reboot: http://stackoverflow.com/a/21847976/441878
  */
 
 'use strict';
 var os = require('os'); os.tmpDir = os.tmpdir;	// hide annoying mac error
 
 // required modules
-const fs = require('./inc/functions.js');	// include functions file
 const memwatch = require('memwatch-next');	// watch for memory leaks
 const sanitizer = require('sanitizer');		// sanitize input https://www.npmjs.com/package/sanitizer
 const validator = require('validator');		// validate input https://www.npmjs.com/package/validator
@@ -63,8 +61,7 @@ server.bind({
 	Boom: Boom,
 	db: db, 				// bind db connection to server
 	Sanitizer: sanitizer, 	// bind sanitizer to server
-	Validator: validator, 	// bind validator to server
-	fs: fs 					// bind functions to server
+	Validator: validator 	// bind validator to server
 });			
 
 

@@ -22,23 +22,6 @@ module.exports = {
 	},
 
 
-	/**
-	 *	parseTwitterDate() into a usable format
-	 */
-	parseTwitterDate: function(str) {
-
-		/*
-		//console.log(tweet.timestamp_ms); // sometimes undefined
-		if (tweet.timestamp_ms !== undefined){
-			var date = new Date(parseInt(tweet.timestamp_ms));
-			console.log(date);
-		}	
-		*/
-		
-		return new Date(Date.parse(str.replace(/( +)/, ' UTC$1')));
-	},
-
-
 
 	/**
 	 *	Make sure a property or method is:

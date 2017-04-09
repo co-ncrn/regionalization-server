@@ -6,6 +6,7 @@
 
 // require globals
 const Globals = require('../inc/globals.js');
+const fs = require('../inc/functions.js');	// include functions file
 
 
 /** 
@@ -19,7 +20,7 @@ exports.root = function (request, reply) {
 		took: new Date()-timer,
 		status: "ok"
 	};	
-	reply(meta);
+	reply(meta); 
 };
 
 /** 
@@ -203,7 +204,6 @@ exports.get_metadata = function(request, reply) {
 exports.catchAll = function(request, reply) {
 	var error = 'The endpoint [ '+ request.path +' ] does not exist'
 	request.log(['error'], error);	
-	//return reply('that endpoint does not exist').code(404); // simple version
 	return reply( this.Boom.badRequest(error) );
 };
 
