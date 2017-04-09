@@ -6,7 +6,7 @@
 
 // require globals
 const Globals = require('../inc/globals.js');
-
+const fs = require('../inc/functions.js');	// include functions file
 
 
 /** 
@@ -20,7 +20,7 @@ exports.root = function (request, reply) {
 		took: new Date()-timer,
 		status: "ok"
 	};	
-	reply(meta);
+	reply(meta); 
 };
 
 /** 
@@ -52,7 +52,7 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	// confirm required params received
 	if (!request.params || (!request.params.msa || !request.params.scenario || !request.params.data)){
 		request.log(['params','error'], 'Missing parameter(s)');
-		return reply( this.Boom.notFound('Missing parameter(s)') );
+		return reply( this.Boom.badRequest('Missing parameter(s)') );
 	}
 	// sanitize input
 	meta.params = { msa: this.Sanitizer.escape(request.params.msa), 
@@ -62,26 +62,20 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	// is msa a valid int between min/max? 
 	if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 })){
 		request.log(['params','error'], 'That MSA does not exist');
-		return reply( this.Boom.notFound('That MSA does not exist') );
+		return reply( this.Boom.badRequest('That MSA does not exist') );
 	} 
 	// does scenario exist inside scenariosData keys?
 	if ( !this.Validator.isIn(meta.params.scenario, scenarios)){
 		request.log(['params','error'], 'That scenario does not exist');
-		return reply( this.Boom.notFound('That scenario does not exist') );
+		return reply( this.Boom.badRequest('That scenario does not exist') );
 	}
 	// does data exist inside scenariosData object?
 	if ( !this.Validator.isIn(meta.params.data, scenariosData[meta.params.scenario])){	
 		request.log(['params','error'], 'That data does not exist');	
-		return reply( this.Boom.notFound('That data does not exist') );
+		return reply( this.Boom.badRequest('That data does not exist') );
 	}
 
 
-
-/*
-// testing, pain in the butt
-	if(this.fs.validateMSA(meta.params.msa,this.Validator))
-		return reply( this.Boom.notFound('That MSA does not exist') );
-*/
 
 	var data = meta.params.data;
 	var m_s = meta.params.msa +'_'+ meta.params.scenario;
@@ -146,7 +140,7 @@ exports.get_metadata = function(request, reply) {
 		// validate MSA: is there an MSA and is it a valid int between min/max?
 		if ( !this.Validator.isInt(meta.params.msa, { min: 10180, max: 49740 })){
 			request.log(['params','error'], 'That MSA does not exist');
-			return reply( this.Boom.notFound('That MSA does not exist') );
+			return reply( this.Boom.badRequest('That MSA does not exist') );
 		} else {
 			// otherwise assume no MSA
 			sql += ' WHERE msa='+ meta.params.msa;
@@ -210,8 +204,7 @@ exports.get_metadata = function(request, reply) {
 exports.catchAll = function(request, reply) {
 	var error = 'The endpoint [ '+ request.path +' ] does not exist'
 	request.log(['error'], error);	
-	//return reply('that endpoint does not exist').code(404); // simple version
-	return reply( this.Boom.notFound(error) );
+	return reply( this.Boom.badRequest(error) );
 };
 
 

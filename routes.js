@@ -5,7 +5,6 @@
 'use strict';
 
 const Handlers = require('./handlers/db_calls.js');
-const Joi = require('joi');
 
 let path = "/api";	// original path, before server config
 // may not need to reference /api in URL while using Apache/PHP proxy
@@ -19,7 +18,7 @@ module.exports = [
 		config: { 
 			description: "The root / test route",
 			tags: ['root'],
-			notes: ['For testing'],
+			notes: ['For testing that server is online'],
 			security: true 
 		},
 		method: 'GET',					
@@ -31,14 +30,7 @@ module.exports = [
 			tags: ['data'],
 			notes: ['notes here'],
 			security: true,
-			cache: cache,
-			validate: {
-				params: {
-					msa: Joi.number().required().min(10180).max(49740),
-					scenario: Joi.string().required(),
-					data: Joi.string().required()
-				}
-			}
+			cache: cache
 		},
 		method: 'GET',
 		path: path + '/{msa}/{scenario}/{data}',
@@ -49,12 +41,7 @@ module.exports = [
 			tags: ['metadata'],
 			notes: ['notes here'],
 			security: true,
-			cache: cache,
-			validate: {
-				params: {
-					msa: Joi.number().min(10180).max(49740)
-				}
-			}
+			cache: cache
 		},
 		method: 'GET',
 		path: path + '/_metadata/{msa?}',

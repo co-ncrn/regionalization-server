@@ -13,7 +13,6 @@
     "gulp-nodemon": "^2.2.1",
     "hapi": "^16.1.1",
     "hapi-etags": "^0.1.0",
-    "joi": "^10.4.1",
     "memwatch-next": "^0.3.0",
     "mysql": "^2.13.0",
     "netmask": "^1.0.6",
