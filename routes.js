@@ -19,7 +19,7 @@ module.exports = [
 		config: { 
 			description: "The root / test route",
 			tags: ['root'],
-			notes: ['For testing'],
+			notes: ['For testing that server is online'],
 			security: true 
 		},
 		method: 'GET',					
@@ -32,13 +32,16 @@ module.exports = [
 			notes: ['notes here'],
 			security: true,
 			cache: cache,
-			validate: {
+			/*validate: {
 				params: {
 					msa: Joi.number().required().min(10180).max(49740),
-					scenario: Joi.string().required(),
-					data: Joi.string().required()
+					scenario: Joi.string().min(3).max(5).valid(scenarios).required(),
+					data: Joi.string().min(3).max(10).required()
+				},
+				options: { 
+					abortEarly: false
 				}
-			}
+			}*/
 		},
 		method: 'GET',
 		path: path + '/{msa}/{scenario}/{data}',

@@ -18,6 +18,14 @@ const Boom = require('boom');				// HTTP-friendly error objects https://github.c
 //const Netmask = require('netmask').Netmask;	// block IP addresses in API
 
 
+// load the package and set custom message options
+const Relish = require('relish')({
+	messages: {
+		'msa': 'MSA should be larger than 10180 and less than '
+	}
+});
+
+
 const Hapi = require('hapi');				// load hapi server module
 const server = new Hapi.Server();			// create hapi server object
 
@@ -33,7 +41,11 @@ server.connection({
 			//origin: ['*'] 	
 			// define allowed CORS orgins
 			origin: ["http://owenmundy.local","http://localhost","http://127.0.0.1"]
+		},
+		validate: {
+			failAction: Relish.failAction
 		}
+
 	}
 });
 
@@ -105,8 +117,20 @@ server.ext('onRequest', blockIPs);				// attach blockIPs function to the onReque
 
 
 server.on('response', function (request) {
-    console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
+    console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + 
+    	request.url.path + ' --> ' + request.response.statusCode);
 });
+
+// clean reply error 
+server.ext('onPreResponse', function (request, reply) {
+    if (request.response.isBoom && request.response.data && request.response.data.name === 'ValidationError') {
+        //console.log(request.response.output);
+        request.response.output.payload.message = '';
+    }
+    return reply.continue();
+});
+
+
 
 
 const loggingoptions = require('./inc/loggingoptions.js');	// include functions file
