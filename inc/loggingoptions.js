@@ -30,12 +30,13 @@ exports.goodReportingOptions = {		// Good options for what to report
 		    name: 'Squeeze',
 		    args: [{ 
 		    	//ops: '*', 		// good for testing log rotation
-		    	log: 'start'
+		    	log: 'start',
 		    	/*
-		    	// turning these off because Apache logs these to .../apache2/access_log 
+		    	// consider turning these off because Apache logs these to .../apache2/access_log 
 		    	log: '*', 		
 		    	request: '*' 
-				*/
+		    	*/
+				
 		   	}] 
 		}, {
 		    module: 'good-squeeze', // in addition to filtering, also changes how lines are written
@@ -50,8 +51,8 @@ exports.goodReportingOptions = {		// Good options for what to report
 		        'access.log',
 		        {
 					path: './logs',	// base path
-					size: '10M', 	// rotate every 10 MegaBytes written
-					interval: '1d' 	// rotate daily
+					size: '10M' 	// rotate every 'n' MegaBytes written
+					//interval: '1d' 	// rotate daily
 		        }
 		    ]
 		}],
@@ -76,8 +77,7 @@ exports.goodReportingOptions = {		// Good options for what to report
 		        'error.log',
 		        {
 					path: './logs',
-					size: '10M',
-					interval: '1d'
+					size: '10M'
 		        }
 		    ]
 		}]
