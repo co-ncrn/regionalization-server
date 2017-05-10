@@ -20,7 +20,7 @@ exports.root = function (request, reply) {
 		took: new Date()-timer,
 		status: "ok"
 	};	
-	reply(meta); 
+	reply(meta);  
 };
 
 /** 
@@ -126,7 +126,7 @@ exports.get_MSA_scenario_data = function(request, reply) {
 exports.get_metadata = function(request, reply) {
 	var timer = new Date();
 	var meta = { request: "get_metadata", took: 0 }
-	var sql = "SELECT msa,scenario,data,description,geo FROM _metadata ";
+	var sql = "SELECT msa,scenario,data,description,lat,lng FROM _metadata ";
 
 	// log request
 	//console.log(request.params);

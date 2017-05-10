@@ -29,7 +29,7 @@ server.connection({
 			// allow connections from all
 			//origin: ['*'] 	
 			// define allowed CORS orgins
-			origin: ["http://owenmundy.local","http://localhost","http://127.0.0.1"]
+			origin: ["http://owenmundy.local","http://localhost","http://127.0.0.1","http://owenmundy.com"]
 		}
 	}
 });
