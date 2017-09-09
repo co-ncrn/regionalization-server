@@ -26,10 +26,10 @@ Get all data for an MSA + scenario + data type
 http://localhost:3000/{msa}/{scenario}/{data}
 ```
 For example:
-```
+
 [http://localhost:3000/10180/hous/pctown](http://localhost:3000/10180/hous/pctown)
 [http://localhost:3000/16740/gen/married](http://localhost:3000/16740/gen/married)
-```
+
 
 Get all metadata
 ```
@@ -41,9 +41,9 @@ http://localhost:3000/_metadata/{msa}
 ```
 
 For example:
-```
+
 [http://localhost:3000/_metadata/10180](http://localhost:3000/_metadata/10180)
-```
+
 
 ### License
 
