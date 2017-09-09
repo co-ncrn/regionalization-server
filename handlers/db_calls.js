@@ -90,7 +90,7 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	ORDER BY RID;
 	*/
 	var round = 5;
-	var sql = 'SELECT t.TID, c.RID, '+
+	var sql = 'SELECT SUBSTR(t.TID,2) as TID, c.RID, '+
 					'ROUND(t.'+data+'E,'+round+') as t_'+data+'E, ROUND(r.'+data+'E,'+round+') as r_'+data+'E, ' +
 					'ROUND(t.'+data+'M ,'+round+')as t_'+data+'M, ROUND(r.'+data+'M,'+round+') as r_'+data+'M, ' + 
 					'ROUND(t.'+data+'CV,'+round+') as t_'+data+'CV, ROUND(r.'+data+'CV,'+round+') as r_'+data+'CV ' +
