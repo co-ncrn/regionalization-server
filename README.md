@@ -23,24 +23,27 @@ forever start index.js
 #### Usage
 Get all data for an MSA + scenario + data type
 ```
-http://localhost:3000/api/{msa}/{scenario}/{data}
+http://localhost:3000/{msa}/{scenario}/{data}
 ```
 For example:
-http://localhost:3000/api/10180/hous/pctown
-http://localhost:3000/api/16740/gen/married
+```
+http://localhost:3000/10180/hous/pctown
+http://localhost:3000/16740/gen/married
+```
 
 Get all metadata
 ```
-http://localhost:3000/api/_metadata
+http://localhost:3000/_metadata
 ```
 Get metadata for a single MSA
 ```
-http://localhost:3000/api/_metadata/{msa}
+http://localhost:3000/_metadata/{msa}
 ```
 
 For example:
-http://localhost:3000/api/_metadata/10180
-
+```
+http://localhost:3000/_metadata/10180
+```
 
 ### License
 
