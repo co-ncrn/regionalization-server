@@ -98,7 +98,7 @@ exports.get_MSA_scenario_data = function(request, reply) {
 				    m_s +'_output_regions r, '+
 				    m_s +'_crosswalk c ' +
 				'WHERE t.TID = c.TID AND r.RID = c.RID ' +
-				'ORDER BY RID;';
+				'ORDER BY RID ASC,TID ASC;';
 	console.log("sql: ",sql);
 
 	// perform query
