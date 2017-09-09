@@ -89,17 +89,19 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	WHERE t.TID = c.TID AND r.RID = c.RID
 	ORDER BY RID;
 	*/
-	var round = 5;
+
+
+
 	var sql = 'SELECT SUBSTR(t.TID,2) as TID, c.RID, '+
-					'ROUND(t.'+data+'E,'+round+') as t_'+data+'E, ROUND(r.'+data+'E,'+round+') as r_'+data+'E, ' +
-					'ROUND(t.'+data+'M ,'+round+')as t_'+data+'M, ROUND(r.'+data+'M,'+round+') as r_'+data+'M, ' + 
-					'ROUND(t.'+data+'CV,'+round+') as t_'+data+'CV, ROUND(r.'+data+'CV,'+round+') as r_'+data+'CV ' +
+					't.'+data+'E as t_'+data+'E, r.'+data+'E as r_'+data+'E, ' +
+					't.'+data+'M as t_'+data+'M, r.'+data+'M as r_'+data+'M, ' + 
+					'ROUND(t.'+data+'CV,4) as t_'+data+'CV, ROUND(r.'+data+'CV, 4) as r_'+data+'CV ' +
 				'FROM '+ m_s +'_input_tracts t, '+
 				    m_s +'_output_regions r, '+
 				    m_s +'_crosswalk c ' +
 				'WHERE t.TID = c.TID AND r.RID = c.RID ' +
 				'ORDER BY RID ASC,TID ASC;';
-	console.log("sql: ",sql);
+	//console.log("sql: ",sql);
 
 	// perform query
 	this.db.query(sql, function (error, results, fields) {
