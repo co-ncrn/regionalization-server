@@ -90,12 +90,10 @@ exports.get_MSA_scenario_data = function(request, reply) {
 	ORDER BY RID;
 	*/
 
-
-
 	var sql = 'SELECT SUBSTR(t.TID,2) as TID, c.RID, '+
 					't.'+data+'E as t_'+data+'E, r.'+data+'E as r_'+data+'E, ' +
 					't.'+data+'M as t_'+data+'M, r.'+data+'M as r_'+data+'M, ' + 
-					'ROUND(t.'+data+'CV,4) as t_'+data+'CV, ROUND(r.'+data+'CV, 4) as r_'+data+'CV ' +
+					't.'+data+'CV as t_'+data+'CV, r.'+data+'CV as r_'+data+'CV ' +
 				'FROM '+ m_s +'_input_tracts t, '+
 				    m_s +'_output_regions r, '+
 				    m_s +'_crosswalk c ' +
